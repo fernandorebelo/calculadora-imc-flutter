@@ -34,9 +34,22 @@ class _CalculadoraImcState extends State<CalculadoraImc> {
 
   paginaHome() {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    late FocusNode myFocusNode;
+
+    @override
+    void initState() {
+      super.initState();
+      myFocusNode = FocusNode();
+    }
+
+    @override
+    void dispose() {
+      myFocusNode.dispose();
+      super.dispose();
+    }
 
     return Scaffold(
-        appBar: Componentes().criaMenu(),
+        appBar: Componentes().criaMenu(_formKey),
         body: Form(
           key: _formKey,
           child: Column(
@@ -48,7 +61,7 @@ class _CalculadoraImcState extends State<CalculadoraImc> {
                   'Altura obrigatória', 'kg'),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: Componentes().criaBotao(_formKey, 'Calcular'),
+                child: Componentes().criaBotao(_formKey, 'Calcular', context),
               )
             ],
           ),

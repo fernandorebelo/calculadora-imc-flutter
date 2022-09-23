@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class Componentes {
-  criaMenu() {
+  criaMenu(formKey) {
     return AppBar(
       title: criaTexto('Calculadora IMC', 20, Colors.white, FontWeight.bold),
       centerTitle: true,
@@ -11,7 +13,7 @@ class Componentes {
       actions: <Widget>[
         IconButton(
           onPressed: () {
-            print('Campo limpo');
+            formKey.currentState?.reset();
           },
           icon: const Icon(Icons.refresh),
           tooltip: 'Limpar campos',
@@ -30,10 +32,12 @@ class Componentes {
 
   inputTexto(textoCaixa, mensagemValidacao, sufixo) {
     return Padding(
-      padding: const EdgeInsets.all(30),
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
       child: TextFormField(
+        autofocus: true,
         maxLength: 5,
         decoration: InputDecoration(
+          border: OutlineInputBorder(),
           hintText: textoCaixa,
           suffixText: sufixo,
         ),
@@ -48,7 +52,7 @@ class Componentes {
     );
   }
 
-  criaBotao(formKey, nomeBotao) {
+  criaBotao(formKey, nomeBotao, context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.green,
@@ -57,7 +61,12 @@ class Componentes {
       ),
       onPressed: () {
         if (formKey.currentState!.validate()) {
-          print('IMC calculado');
+          formKey.currentState?.reset();
+          // formKey.currentState?.showSnackBar(
+          //   const SnackBar(
+          //     content: Text('IMC calculado'),
+          //   ),
+          // );
         }
       },
       child: Text(nomeBotao),
