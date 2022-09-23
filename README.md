@@ -1,16 +1,13 @@
-# calculadora_imc
+# Calculadora IMC - Flutter
 
-A new Flutter project.
+Calculadora desenvolvida com Flutter.
 
-## Getting Started
+Inserindo o peso e a altura ele calcula o IMC.
 
-This project is a starting point for a Flutter application.
+Botão para limpar os campos.
 
-A few resources to get you started if this is your first Flutter project:
+Caso não seja inserido nenhum valor ele emite uma mensagem de alerta.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+![image](https://user-images.githubusercontent.com/94297628/191876042-77c56b04-4abd-4fcc-9ce2-e05076c41076.png)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![image](https://user-images.githubusercontent.com/94297628/191876061-a572b4bb-767b-4c61-9814-1558b7e7e9f8.png)
