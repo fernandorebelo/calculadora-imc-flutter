@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class Componentes {
-  criaMenu(formKey) {
+  criaMenu(formKey, funcao) {
     return AppBar(
       title: criaTexto('Calculadora IMC', 20, Colors.white, FontWeight.bold),
       centerTitle: true,
@@ -13,7 +13,7 @@ class Componentes {
       actions: <Widget>[
         IconButton(
           onPressed: () {
-            formKey.currentState?.reset();
+            funcao();
           },
           icon: const Icon(Icons.refresh),
           tooltip: 'Limpar campos',
@@ -30,47 +30,88 @@ class Componentes {
     );
   }
 
-  inputTexto(textoCaixa, mensagemValidacao, sufixo) {
+  inputTexto(tipo, textoCaixa, mensagemValidacao, sufixo, controlador) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
       child: TextFormField(
         autofocus: true,
         maxLength: 5,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          hintText: textoCaixa,
-          suffixText: sufixo,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          color: Colors.green,
+          fontSize: 18,
         ),
-        validator: (String? value) {
+        keyboardType: tipo,
+        controller: controlador,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(25)),
+          ),
+          labelText: textoCaixa,
+          suffixText: sufixo,
+          labelStyle: const TextStyle(
+            color: Colors.green,
+          ),
+        ),
+        validator: (value) {
           if (value == null || value.isEmpty) {
             return mensagemValidacao;
           }
           return null;
         },
-        textAlign: TextAlign.center,
       ),
     );
   }
 
-  criaBotao(formKey, nomeBotao, context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green,
-        textStyle: TextStyle(fontSize: 20),
-        fixedSize: Size(300, 50),
-      ),
-      onPressed: () {
-        if (formKey.currentState!.validate()) {
-          formKey.currentState?.reset();
-          // formKey.currentState?.showSnackBar(
-          //   const SnackBar(
-          //     content: Text('IMC calculado'),
-          //   ),
-          // );
-        }
-      },
-      child: Text(nomeBotao),
+  criaBotao(formKey, nomeBotao, funcaoCalcular) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+            height: 80,
+            child: ElevatedButton(
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  funcaoCalcular();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
+              child: Text(
+                nomeBotao,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        )
+      ],
     );
+
+    // return ElevatedButton(
+    //   style: ElevatedButton.styleFrom(
+    //     backgroundColor: Colors.green,
+    //     textStyle: TextStyle(fontSize: 20),
+    //     fixedSize: Size(300, 50),
+    //   ),
+    //   onPressed: () {
+    //     if (formKey.currentState!.validate()) {
+    //       formKey.currentState?.reset();
+    //       // formKey.currentState?.showSnackBar(
+    //       //   const SnackBar(
+    //       //     content: Text('IMC calculado'),
+    //       //   ),
+    //       // );
+    //     }
+    //   },
+    //   child: Text(nomeBotao),
+    // );
   }
 
   criaTexto(texto, tamanho, cor, peso) {

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:calculadora_imc/componentes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +13,7 @@ class MyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CalculadoraImc();
+    return const CalculadoraImc();
   }
 }
 
@@ -23,6 +25,40 @@ class CalculadoraImc extends StatefulWidget {
 }
 
 class _CalculadoraImcState extends State<CalculadoraImc> {
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController pesoController = TextEditingController();
+  TextEditingController alturaController = TextEditingController();
+  String mensagem = 'Informe os seus dados.';
+
+  limparCampos() {
+    pesoController.text = '';
+    alturaController.text = '';
+    setState(() {
+      mensagem = 'Informe os seus dados';
+      _formKey = GlobalKey<FormState>();
+    });
+  }
+
+  calcularImc() {
+    setState(() {
+      double peso = double.parse(pesoController.text);
+      double altura = double.parse(alturaController.text);
+      double imc = peso / (altura * altura);
+      String imcTxt = imc.toStringAsPrecision(4);
+      if (imc < 18.6) {
+        // mensagem = 'IMC = $imcTxt | Abaixo do peso.';
+        mensagem = 'IMC = $imcTxt | Abaixo do peso.';
+        //mensagem cor laranja
+      } else if (imc > 18.6 && imc < 24.9) {
+        mensagem = 'IMC = $imcTxt | Peso ideal.';
+        //mensagem cor verde
+      } else if (imc > 25) {
+        mensagem = 'IMC = $imcTxt | Acima do peso.';
+        //mensagem cor vermelha
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,36 +69,28 @@ class _CalculadoraImcState extends State<CalculadoraImc> {
   }
 
   paginaHome() {
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    late FocusNode myFocusNode;
-
-    @override
-    void initState() {
-      super.initState();
-      myFocusNode = FocusNode();
-    }
-
-    @override
-    void dispose() {
-      myFocusNode.dispose();
-      super.dispose();
-    }
-
     return Scaffold(
-        appBar: Componentes().criaMenu(_formKey),
+        appBar: Componentes().criaMenu(_formKey, limparCampos),
         body: Form(
           key: _formKey,
           child: Column(
             children: <Widget>[
               Componentes().criaIcone(Icons.person_outline, 150, Colors.green),
               Componentes().inputTexto(
-                  'Digite seu peso em Kg | Ex: 70.5', 'Peso obrigatório', 'm'),
-              Componentes().inputTexto('Digite sua altura em metros | Ex: 1.75',
-                  'Altura obrigatória', 'kg'),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: Componentes().criaBotao(_formKey, 'Calcular', context),
-              )
+                  TextInputType.number,
+                  'Digite seu peso em Kg | Ex: 70.5',
+                  'Peso obrigatório',
+                  'kg',
+                  pesoController),
+              Componentes().inputTexto(
+                  TextInputType.number,
+                  'Digite sua altura em metros | Ex: 1.75',
+                  'Altura obrigatória',
+                  'm',
+                  alturaController),
+              Componentes().criaBotao(_formKey, 'Calcular', calcularImc),
+              Componentes()
+                  .criaTexto(mensagem, 15, Colors.green, FontWeight.normal),
             ],
           ),
         ));
