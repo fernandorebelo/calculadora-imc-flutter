@@ -28,7 +28,16 @@ class _CalculadoraImcState extends State<CalculadoraImc> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController pesoController = TextEditingController();
   TextEditingController alturaController = TextEditingController();
-  String mensagem = 'Informe os seus dados.';
+  String mensagem = 'Informe os seus dados';
+  double contador = 0;
+  double imc = 0;
+  bool condicaoAbaixo = false;
+  bool condicaoNormal = false;
+  bool condicaoSobrepeso = false;
+  bool condicaoGrauI = false;
+  bool condicaoGrauII = false;
+  bool condicaoGrauIII = false;
+  Color cor = Colors.green;
 
   limparCampos() {
     pesoController.text = '';
@@ -43,18 +52,38 @@ class _CalculadoraImcState extends State<CalculadoraImc> {
     setState(() {
       double peso = double.parse(pesoController.text);
       double altura = double.parse(alturaController.text);
-      double imc = peso / (altura * altura);
+      imc = peso / (altura * altura);
       String imcTxt = imc.toStringAsPrecision(4);
-      if (imc < 18.6) {
-        // mensagem = 'IMC = $imcTxt | Abaixo do peso.';
-        mensagem = 'IMC = $imcTxt | Abaixo do peso.';
-        //mensagem cor laranja
+      if (imc < 18.5) {
+        mensagem = 'IMC = $imcTxt | Abaixo do Peso.';
+        contador = imc;
+        condicaoAbaixo = true;
+        condicaoAbaixo ? cor = Colors.red : cor = Colors.green;
       } else if (imc > 18.6 && imc < 24.9) {
-        mensagem = 'IMC = $imcTxt | Peso ideal.';
-        //mensagem cor verde
-      } else if (imc > 25) {
-        mensagem = 'IMC = $imcTxt | Acima do peso.';
-        //mensagem cor vermelha
+        mensagem = 'IMC = $imcTxt | Peso Normal.';
+        contador = imc;
+        condicaoNormal = false;
+        condicaoNormal ? cor = Colors.amber : cor = Colors.green;
+      } else if (imc > 25 && imc < 29.9) {
+        mensagem = 'IMC = $imcTxt | Sobrepeso.';
+        contador = imc;
+        condicaoSobrepeso = true;
+        condicaoSobrepeso ? cor = Colors.amber : cor = Colors.green;
+      } else if (imc > 30 && imc < 34.9) {
+        mensagem = 'IMC = $imcTxt | Obesidade Grau I.';
+        contador = imc;
+        condicaoGrauI = true;
+        condicaoGrauI ? cor = Colors.purple : cor = Colors.green;
+      } else if (imc > 35 && imc < 39.9) {
+        mensagem = 'IMC = $imcTxt | Obesidade Grau II.';
+        contador = imc;
+        condicaoGrauII = true;
+        condicaoGrauIII ? cor = Colors.cyan : cor = Colors.green;
+      } else if (imc >= 40) {
+        mensagem = 'IMC = $imcTxt | Obesidade Grau III ou Mórbida.';
+        contador = imc;
+        condicaoGrauIII = true;
+        condicaoGrauIII ? cor = Colors.pink : cor = Colors.green;
       }
     });
   }
@@ -89,8 +118,12 @@ class _CalculadoraImcState extends State<CalculadoraImc> {
                   'm',
                   alturaController),
               Componentes().criaBotao(_formKey, 'Calcular', calcularImc),
-              Componentes()
-                  .criaTexto(mensagem, 15, Colors.green, FontWeight.normal),
+              Componentes().criaTexto(
+                mensagem,
+                15,
+                cor,
+                FontWeight.normal,
+              ),
             ],
           ),
         ));
